@@ -1,0 +1,143 @@
+#importing modules
+import datetime
+import time
+import picamera
+from time import sleep
+from sense_hat import SenseHat
+s = SenseHat()
+cam = picamera.PiCamera()
+
+
+#setting up sensehat
+#define LED rgb codes
+green = (0, 255, 0)
+lightgreen = (51, 204, 51)
+darkgreen = (17, 69, 27)
+nothing = (0, 0, 0)
+brown = (102, 51, 0)
+pink = (255, 105, 100)
+
+#adding variable names
+g = green
+lg = lightgreen
+dg = darkgreen
+b = brown
+p = pink
+n = nothing
+
+#defining plant stages chronologically
+def plant_stage1():
+    logo = [
+    n, n, n, n, n, n, n, n, 
+    n, n, n, n, n, n, n, n,
+    n, n, n, n, n, n, n, n,
+    n, n, n, n, n, n, n, n,
+    n, n, n, n, n, n, n, n,
+    n, n, n, g, lg, n, n, n,
+    n, n, b, b, b, b, n, n,
+    n, n, n, b, b, n, n, n,
+    ]
+    return logo
+
+def plant_stage2():
+    logo = [
+   
+    n, n, n, n, n, n, n, n, 
+    n, n, n, n, n, n, n, n,
+    n, n, n, n, n, n, n, n,
+    n, n, n, dg, g, n, n, n,
+    n, n, n, g, g, n, n, n,
+    n, n, n, g, lg, n, n, n,
+    n, n, b, b, b, b, n, n,
+    n, n, n, b, b, n, n, n,
+    ]
+    return logo
+
+def plant_stage3():
+    logo = [
+    n, n, n, n, n, n, n, n, 
+    n, n, n, g, dg, n, n, n,
+    n, n, n, g, g, n, n, n,
+    n, n, n, dg, g, n, g, n,
+    n, n, n, g, g, g, lg, n,
+    n, n, n, g, lg, n, n, n,
+    n, n, b, b, b, b, n, n,
+    n, n, n, b, b, n, n, n,
+    ]
+    return logo
+
+def plant_stage4():
+    logo = [
+   
+    n, g, n, g, lg, n, n, n, 
+    n, g, n, g, dg, n, n, n,
+    n, g, g, g, g, n, n, n,
+    n, n, n, dg, g, n, g, n,
+    n, n, n, g, g, g, lg, n,
+    n, n, n, g, lg, n, n, n,
+    n, n, b, b, b, b, n, n,
+    n, n, n, b, b, n, n, n,
+    ]
+    return logo
+
+def plant_stage5():
+    logo = [
+   
+    n, g, n, g, p, n, n, n, 
+    n, p, n, g, g, n, n, n,
+    n, g, g, g, g, n, p, n,
+    n, n, n, g, g, n, g, n,
+    n, n, n, p, g, g, g, n,
+    n, n, n, g, g, n, n, n,
+    n, n, b, b, b, b, n, n,
+    n, n, n, b, b, n, n, n,
+    ]
+    return logo
+
+#defining plant stages as images chronologically
+images = [plant_stage1, plant_stage2, plant_stage3, plant_stage4, plant_stage5]
+images_count = 0
+
+#defining variable start_time as starting time of program
+start_time = datetime.datetime.now()
+#print start time at beginning of program
+print('Start time: ', start_time)
+#defining current time as the current time
+current_time = datetime.datetime.now()
+#printing current time at the beginning of the program
+print('Current time: ', current_time)
+#setting the initial photo count to 0
+photo_count = 0
+team_name = "Victree"
+
+while current_time < start_time + datetime.timedelta(seconds=10700):
+    #while current time is less than end time which is 3 hours, run loop program
+    #if (photo_count <= 10): #if photo count is less than 60 photos
+        #define time_stamp as current time a photo is taken
+    time_stamp = datetime.datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
+    current_time = datetime.datetime.now()
+    info = (time_stamp, team_name)
+    print(current_time)
+        #set the camera resolution to the max resolution
+    cam.resolution == (2594, 1944)
+        #set photo_count to increase every time a photo is taken
+    photo_count += 1
+        #set camera to capture + save photos with time stamp
+    cam.capture('img{}.jpg'.format(info))
+        #set LED matrix to cycle through phases
+    if (images_count < 5):
+            #set pixels on LED matrix
+        s.set_pixels(images[images_count % len(images)]())
+            #increase LED matrix images when displayed
+        images_count += 1
+            #sleep for 1 second after displaying
+        sleep(1)
+    elif (images_count == 5):
+            #if LED images are done phases, cycle to first phase again
+        images_count = 0
+            #print photo count
+    print('photo', photo_count)
+        #sleep until taking next photo
+    sleep(160)
+
+print('done')
